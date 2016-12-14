@@ -4,7 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import com.agenthun.smartswitch.model.User;
+import com.agenthun.smartswitch.data.User;
+
 
 /**
  * @project SmartSwitch

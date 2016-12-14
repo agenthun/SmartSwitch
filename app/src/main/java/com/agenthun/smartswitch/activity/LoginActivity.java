@@ -17,9 +17,9 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 
 import com.agenthun.smartswitch.R;
+import com.agenthun.smartswitch.data.User;
 import com.agenthun.smartswitch.helper.ApiLevelHelper;
 import com.agenthun.smartswitch.helper.PreferencesHelper;
-import com.agenthun.smartswitch.model.User;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

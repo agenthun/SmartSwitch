@@ -16,4 +16,8 @@
     <color name="blue_grey_900">#ff263238</color>
 
     <color name="touch_effect">#9ccc</color>
+
+    <color name="switch_thumb_normal_tint">#BDBDBD</color>
+    <color name="switch_thumb_activated_tint">@color/colorAccent</color>
+    <color name="switch_track_tint">#3A373F</color>
 </resources>

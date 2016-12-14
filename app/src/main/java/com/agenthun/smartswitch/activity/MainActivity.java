@@ -17,10 +17,10 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.agenthun.smartswitch.R;
+import com.agenthun.smartswitch.data.User;
 import com.agenthun.smartswitch.databinding.ActivityMainBinding;
 import com.agenthun.smartswitch.fragment.DeviceFragment;
 import com.agenthun.smartswitch.helper.PreferencesHelper;
-import com.agenthun.smartswitch.model.User;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

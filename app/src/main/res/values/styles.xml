@@ -42,5 +42,13 @@
         <item name="colorControlNormal">@color/colorPrimary</item>
     </style>
 
+    <style name="AppTheme.SwitchCompat" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorControlActivated">@color/switch_thumb_activated_tint</item>
+        <!-- Inactive thumb color -->
+        <!--<item name="colorSwitchThumbNormal">@color/switch_thumb_normal_tint</item>-->
+        <!-- Inactive track color(30% transparency) -->
+        <!--<item name="android:colorForeground">@color/switch_track_tint</item>-->
+    </style>
+
     <style name="AppTheme.RegisterActivity" />
 </resources>

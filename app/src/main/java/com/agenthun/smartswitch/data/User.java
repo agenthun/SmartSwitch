@@ -1,9 +1,7 @@
-package com.agenthun.smartswitch.model;
+package com.agenthun.smartswitch.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import java.util.Objects;
 
 /**
  * @project SmartSwitch

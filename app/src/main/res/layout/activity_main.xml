@@ -5,7 +5,7 @@
 
         <variable
             name="user"
-            type="com.agenthun.smartswitch.model.User" />
+            type="com.agenthun.smartswitch.data.User" />
     </data>
 
     <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"

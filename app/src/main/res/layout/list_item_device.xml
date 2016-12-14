@@ -31,15 +31,31 @@
             android:textColor="?android:textColorPrimary"
             android:textSize="16sp" />
 
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/device_time_setting"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="13:00-14:00关"
-            android:textColor="?android:textColorSecondary"
-            android:textSize="14sp" />
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/device_config_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="13:00-14:00"
+                android:textColor="?android:textColorSecondary"
+                android:textSize="14sp" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/device_config_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/spacing_micro"
+                android:text="开"
+                android:textColor="?android:textColorSecondary"
+                android:textSize="14sp" />
+        </LinearLayout>
 
         <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/device_config_interval"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="周一 周三"
@@ -52,7 +68,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignRight="@id/details"
+        android:checked="true"
         android:paddingBottom="@dimen/spacing_double"
         android:paddingLeft="@dimen/spacing_double"
-        android:paddingTop="@dimen/spacing_double" />
+        android:paddingTop="@dimen/spacing_double"
+        android:textOff="@string/status_close"
+        android:textOn="@string/status_open"
+        app:showText="false"
+        app:theme="@style/AppTheme.SwitchCompat" />
 </RelativeLayout>
