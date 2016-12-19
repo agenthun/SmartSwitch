@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_login"
@@ -11,8 +10,8 @@
 
     <android.support.v7.widget.CardView
         android:id="@+id/cv_login"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/card_login_width"
+        android:layout_height="@dimen/card_login_height"
         android:layout_centerInParent="true"
         app:cardCornerRadius="4dp">
 
@@ -24,6 +23,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
+                android:layout_marginBottom="@dimen/spacing_double"
                 android:layout_marginTop="@dimen/spacing_double">
 
                 <View
@@ -48,8 +48,7 @@
                 android:layout_height="wrap_content"
                 android:minHeight="?android:attr/actionBarSize"
                 android:paddingLeft="@dimen/spacing_double"
-                android:paddingRight="@dimen/spacing_double"
-                android:paddingTop="@dimen/spacing_double">
+                android:paddingRight="@dimen/spacing_double">
 
                 <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/username"
@@ -85,7 +84,7 @@
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/sign_in_button"
                 style="?android:textAppearanceMedium"
-                android:layout_width="150dp"
+                android:layout_width="@dimen/button_width"
                 android:layout_height="@dimen/spacing_middle"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/spacing_double"

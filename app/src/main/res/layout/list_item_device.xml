@@ -2,23 +2,23 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="88dp"
+    android:layout_height="@dimen/list_item_height"
     android:background="@drawable/selector_list"
     android:paddingLeft="@dimen/spacing_double"
     android:paddingRight="@dimen/spacing_double">
 
     <ImageView
         android:id="@+id/device_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingRight="@dimen/spacing_double"
-        android:paddingTop="@dimen/spacing_double"
+        android:layout_width="@dimen/size_avatar"
+        android:layout_height="@dimen/size_avatar"
+        android:layout_marginRight="@dimen/spacing_double"
+        android:layout_marginTop="@dimen/spacing_double"
         android:src="@drawable/ic_default_device" />
 
     <LinearLayout
         android:id="@+id/details"
         android:layout_width="match_parent"
-        android:layout_height="88dp"
+        android:layout_height="@dimen/list_item_height"
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:paddingLeft="@dimen/spacing_middle">
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:text="Device-one"
             android:textColor="?android:textColorPrimary"
-            android:textSize="16sp" />
+            android:textSize="@dimen/size_text_primary" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:text="13:00-14:00"
                 android:textColor="?android:textColorSecondary"
-                android:textSize="14sp" />
+                android:textSize="@dimen/size_text_secondary" />
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/device_config_status"
@@ -51,7 +51,7 @@
                 android:paddingLeft="@dimen/spacing_micro"
                 android:text="开"
                 android:textColor="?android:textColorSecondary"
-                android:textSize="14sp" />
+                android:textSize="@dimen/size_text_secondary" />
         </LinearLayout>
 
         <android.support.v7.widget.AppCompatTextView
@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:text="周一 周三"
             android:textColor="?android:textColorSecondary"
-            android:textSize="14sp" />
+            android:textSize="@dimen/size_text_secondary" />
     </LinearLayout>
 
     <android.support.v7.widget.SwitchCompat
@@ -68,12 +68,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignRight="@id/details"
+        android:layout_marginLeft="@dimen/spacing_double"
+        android:layout_marginTop="@dimen/spacing_double"
         android:checked="true"
-        android:paddingBottom="@dimen/spacing_double"
-        android:paddingLeft="@dimen/spacing_double"
-        android:paddingTop="@dimen/spacing_double"
         android:textOff="@string/status_close"
         android:textOn="@string/status_open"
         app:showText="false"
+        app:switchMinWidth="@dimen/size_icon"
         app:theme="@style/AppTheme.SwitchCompat" />
+
 </RelativeLayout>

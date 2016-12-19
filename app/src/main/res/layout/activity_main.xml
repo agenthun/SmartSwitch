@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:context="com.agenthun.smartswitch.activity.MainActivity">
+        tools:context="com.agenthun.smartswitch.devices.MainActivity">
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
@@ -41,7 +41,8 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
             android:src="@drawable/ic_add_black_24dp"
-            android:tint="@color/white" />
+            android:tint="@color/white"
+            app:fabSize="normal" />
 
     </android.support.design.widget.CoordinatorLayout>
 </layout>

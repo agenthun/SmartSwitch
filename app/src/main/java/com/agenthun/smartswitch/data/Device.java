@@ -17,21 +17,25 @@ import java.util.UUID;
 
 public class Device implements Parcelable {
 
-    @NonNull
-    private final String id;
+    public static final int STATUS_DEVICE_INITIAL = -1;
+    public static final int STATUS_DEVICE_CLOSE = 0;
+    public static final int STATUS_DEVICE_OPEN = 1;
 
     @NonNull
-    private final String mac;
+    private String myId;
+
+    @NonNull
+    private String mac;
     @Nullable
     private Boolean needRemoteControl;
     @Nullable
-    private final Integer factoryId;
+    private Integer factoryId;
     @Nullable
-    private final Integer type;
+    private Integer type;
     @Nullable
-    private final String hardwareVer;
+    private String hardwareVer;
     @Nullable
-    private final String softwareVer;
+    private String softwareVer;
     @Nullable
     private String bindTime;
     @Nullable
@@ -45,13 +49,13 @@ public class Device implements Parcelable {
     @Nullable
     private Boolean online;
     @Nullable
-    private final Integer deviceId;
+    private Integer id;
     @Nullable
-    private final Integer pid;
+    private Integer pid;
     @Nullable
-    private final Integer nodeType;
+    private Integer nodeType;
     @Nullable
-    private final Integer orderNo;
+    private Integer orderNo;
 
     @Nullable
     private String name;
@@ -60,24 +64,32 @@ public class Device implements Parcelable {
     private String configTime;
 
     @Nullable
-    private Boolean configStatus;
+    private Integer configStatus;
 
     @Nullable
-    private String configInterval;
+    private Integer configInterval;
 
     private Boolean status;
+
+    public Device() {
+        this.myId = UUID.randomUUID().toString();
+        this.configTime = "";
+        this.configStatus = STATUS_DEVICE_INITIAL;
+        this.configInterval = 0;
+        this.status = false;
+    }
 
     public Device(@NonNull String mac) {
         this(mac, false);
     }
 
     public Device(@NonNull String mac, Boolean status) {
-        this(mac, "公牛智能插座", null, false, null, status);
+        this(mac, "公牛智能插座", "", STATUS_DEVICE_INITIAL, 0, status);
     }
 
     public Device(@NonNull String mac, @Nullable String name,
-                  @Nullable String configTime, @Nullable Boolean configStatus,
-                  @Nullable String configInterval, Boolean status) {
+                  @Nullable String configTime, @Nullable Integer configStatus,
+                  @Nullable Integer configInterval, Boolean status) {
         this(mac, "icon_default_photo1.png", name,
                 configTime, configStatus,
                 configInterval, status);
@@ -85,8 +97,8 @@ public class Device implements Parcelable {
 
     public Device(@NonNull String mac,
                   @Nullable String image, @Nullable String name,
-                  @Nullable String configTime, @Nullable Boolean configStatus,
-                  @Nullable String configInterval, Boolean status) {
+                  @Nullable String configTime, @Nullable Integer configStatus,
+                  @Nullable Integer configInterval, Boolean status) {
         this(mac, false, 1,
                 257, "v1.0",
                 "1.0.0.4a.gn13_0917", "0",
@@ -105,36 +117,36 @@ public class Device implements Parcelable {
                   @Nullable String softwareVer, @Nullable String bindTime,
                   @Nullable Long totalOnlineTime, @Nullable Double gpsLat,
                   @Nullable Double gpsLng, @Nullable String image,
-                  @Nullable Boolean online, @Nullable Integer deviceId,
+                  @Nullable Boolean online, @Nullable Integer id,
                   @Nullable Integer pid, @Nullable Integer nodeType,
                   @Nullable Integer orderNo, @Nullable String name,
-                  @Nullable String configTime, @Nullable Boolean configStatus,
-                  @Nullable String configInterval, Boolean status) {
+                  @Nullable String configTime, @Nullable Integer configStatus,
+                  @Nullable Integer configInterval, Boolean status) {
         this(UUID.randomUUID().toString(), mac,
                 needRemoteControl, factoryId,
                 type, hardwareVer,
                 softwareVer, bindTime,
                 totalOnlineTime, gpsLat,
                 gpsLng, image,
-                online, deviceId,
+                online, id,
                 pid, nodeType,
                 orderNo, name,
                 configTime, configStatus,
                 configInterval, status);
     }
 
-    public Device(@NonNull String id, @NonNull String mac,
+    public Device(@NonNull String myId, @NonNull String mac,
                   @Nullable Boolean needRemoteControl, @Nullable Integer factoryId,
                   @Nullable Integer type, @Nullable String hardwareVer,
                   @Nullable String softwareVer, @Nullable String bindTime,
                   @Nullable Long totalOnlineTime, @Nullable Double gpsLat,
                   @Nullable Double gpsLng, @Nullable String image,
-                  @Nullable Boolean online, @Nullable Integer deviceId,
+                  @Nullable Boolean online, @Nullable Integer id,
                   @Nullable Integer pid, @Nullable Integer nodeType,
                   @Nullable Integer orderNo, @Nullable String name,
-                  @Nullable String configTime, @Nullable Boolean configStatus,
-                  @Nullable String configInterval, Boolean status) {
-        this.id = id;
+                  @Nullable String configTime, @Nullable Integer configStatus,
+                  @Nullable Integer configInterval, Boolean status) {
+        this.myId = myId;
         this.mac = mac;
         this.needRemoteControl = needRemoteControl;
         this.factoryId = factoryId;
@@ -147,7 +159,7 @@ public class Device implements Parcelable {
         this.gpsLng = gpsLng;
         this.image = image;
         this.online = online;
-        this.deviceId = deviceId;
+        this.id = id;
         this.pid = pid;
         this.nodeType = nodeType;
         this.orderNo = orderNo;
@@ -159,7 +171,7 @@ public class Device implements Parcelable {
     }
 
     protected Device(Parcel in) {
-        id = in.readString();
+        myId = in.readString();
         mac = in.readString();
         needRemoteControl = ParcelableHelper.readBoolean(in);
         factoryId = in.readInt();
@@ -172,26 +184,38 @@ public class Device implements Parcelable {
         gpsLng = in.readDouble();
         image = in.readString();
         online = ParcelableHelper.readBoolean(in);
-        deviceId = in.readInt();
+        id = in.readInt();
         pid = in.readInt();
         nodeType = in.readInt();
         orderNo = in.readInt();
         name = in.readString();
 
         configTime = in.readString();
-        configStatus = ParcelableHelper.readBoolean(in);
-        configInterval = in.readString();
+        configStatus = in.readInt();
+        configInterval = in.readInt();
         status = ParcelableHelper.readBoolean(in);
     }
 
     @NonNull
-    public String getId() {
-        return id;
+    public String getMyId() {
+        return myId;
+    }
+
+    public void setMyId(@NonNull String myId) {
+        this.myId = myId;
+    }
+
+    public void setMyId() {
+        this.myId = UUID.randomUUID().toString();
     }
 
     @NonNull
     public String getMac() {
         return mac;
+    }
+
+    public void setMac(@NonNull String mac) {
+        this.mac = mac;
     }
 
     @Nullable
@@ -208,9 +232,17 @@ public class Device implements Parcelable {
         return factoryId;
     }
 
+    public void setFactoryId(@Nullable Integer factoryId) {
+        this.factoryId = factoryId;
+    }
+
     @Nullable
     public Integer getType() {
         return type;
+    }
+
+    public void setType(@Nullable Integer type) {
+        this.type = type;
     }
 
     @Nullable
@@ -218,9 +250,17 @@ public class Device implements Parcelable {
         return hardwareVer;
     }
 
+    public void setHardwareVer(@Nullable String hardwareVer) {
+        this.hardwareVer = hardwareVer;
+    }
+
     @Nullable
     public String getSoftwareVer() {
         return softwareVer;
+    }
+
+    public void setSoftwareVer(@Nullable String softwareVer) {
+        this.softwareVer = softwareVer;
     }
 
     @Nullable
@@ -278,8 +318,12 @@ public class Device implements Parcelable {
     }
 
     @Nullable
-    public Integer getDeviceId() {
-        return deviceId;
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(@Nullable Integer id) {
+        this.id = id;
     }
 
     @Nullable
@@ -287,14 +331,26 @@ public class Device implements Parcelable {
         return pid;
     }
 
+    public void setPid(@Nullable Integer pid) {
+        this.pid = pid;
+    }
+
     @Nullable
     public Integer getNodeType() {
         return nodeType;
     }
 
+    public void setNodeType(@Nullable Integer nodeType) {
+        this.nodeType = nodeType;
+    }
+
     @Nullable
     public Integer getOrderNo() {
         return orderNo;
+    }
+
+    public void setOrderNo(@Nullable Integer orderNo) {
+        this.orderNo = orderNo;
     }
 
     @Nullable
@@ -316,20 +372,20 @@ public class Device implements Parcelable {
     }
 
     @Nullable
-    public Boolean getConfigStatus() {
+    public Integer getConfigStatus() {
         return configStatus;
     }
 
-    public void setConfigStatus(@Nullable Boolean configStatus) {
+    public void setConfigStatus(@Nullable Integer configStatus) {
         this.configStatus = configStatus;
     }
 
     @Nullable
-    public String getConfigInterval() {
+    public Integer getConfigInterval() {
         return configInterval;
     }
 
-    public void setConfigInterval(@Nullable String configInterval) {
+    public void setConfigInterval(@Nullable Integer configInterval) {
         this.configInterval = configInterval;
     }
 
@@ -360,7 +416,7 @@ public class Device implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(id);
+        parcel.writeString(myId);
         parcel.writeString(mac);
         ParcelableHelper.writeBoolean(parcel, needRemoteControl);
         parcel.writeInt(factoryId);
@@ -373,15 +429,15 @@ public class Device implements Parcelable {
         parcel.writeDouble(gpsLng);
         parcel.writeString(image);
         ParcelableHelper.writeBoolean(parcel, online);
-        parcel.writeInt(deviceId);
+        parcel.writeInt(id);
         parcel.writeInt(pid);
         parcel.writeInt(nodeType);
         parcel.writeInt(orderNo);
         parcel.writeString(name);
 
         parcel.writeString(configTime);
-        ParcelableHelper.writeBoolean(parcel, configStatus);
-        parcel.writeString(configInterval);
+        parcel.writeInt(configStatus);
+        parcel.writeInt(configInterval);
         ParcelableHelper.writeBoolean(parcel, status);
     }
 
@@ -414,7 +470,7 @@ public class Device implements Parcelable {
     @Override
     public String toString() {
         return "Device{" +
-                "id='" + id + '\'' +
+                "myId='" + myId + '\'' +
                 ", mac='" + mac + '\'' +
                 ", needRemoteControl=" + needRemoteControl +
                 ", factoryId=" + factoryId +
@@ -427,7 +483,7 @@ public class Device implements Parcelable {
                 ", gpsLng=" + gpsLng +
                 ", image='" + image + '\'' +
                 ", online=" + online +
-                ", deviceId=" + deviceId +
+                ", id=" + id +
                 ", pid=" + pid +
                 ", nodeType=" + nodeType +
                 ", orderNo=" + orderNo +

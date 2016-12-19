@@ -13,17 +13,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.Toast;
 
 import com.agenthun.smartswitch.R;
+import com.agenthun.smartswitch.data.LoginReq;
+import com.agenthun.smartswitch.data.LoginRsp;
 import com.agenthun.smartswitch.data.User;
+import com.agenthun.smartswitch.devices.MainActivity;
 import com.agenthun.smartswitch.helper.ApiLevelHelper;
 import com.agenthun.smartswitch.helper.PreferencesHelper;
+import com.agenthun.smartswitch.service.RetrofitManager;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Subscriber;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -40,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     AppCompatTextView btnForgetPassword;
     @Bind(R.id.fab)
     FloatingActionButton fab;
+
     private User mUser;
 
     public static void start(Activity activity, Boolean isSavePreferences) {
@@ -109,9 +117,55 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void attemptLogin(Activity activity, User user) {
-        MainActivity.start(activity, user);
-        ActivityCompat.finishAfterTransition(activity);
+    private void attemptLogin(final Activity activity, final User user) {
+        etUsername.setText(mUser.getUsername());
+        etUsername.setFocusable(false);
+        etPassword.setText(mUser.getPassword());
+        etPassword.setFocusable(false);
+
+        LoginReq request = new LoginReq(
+                0,
+                "LoginReq",
+                "GT-P3100",
+                "hun333@126.com",
+                13,
+                "352123052298",
+                86400000,
+                "333123ABC",
+                5000,
+                "F0002C0004",
+                10011
+        );
+
+        RetrofitManager.builder().loginObservable(request)
+                .subscribe(new Subscriber<LoginRsp>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(activity, R.string.error_network, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(LoginRsp loginRsp) {
+                        if (loginRsp.getResult() != 1) {
+                            Toast.makeText(activity, R.string.error_failed_login, Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        PreferencesHelper.writeUserIdToPreferences(activity, loginRsp.getUserId());
+                        PreferencesHelper.writeSIDToPreferences(activity, loginRsp.getSID());
+
+                        Log.d(TAG, "loginObservable() returned: " + loginRsp.toString());
+
+                        MainActivity.start(activity, user);
+                        ActivityCompat.finishAfterTransition(activity);
+                    }
+                });
+
+
     }
 
     private void atteptRegister() {
@@ -137,7 +191,9 @@ public class LoginActivity extends AppCompatActivity {
         if (mUser != null) {
             etUsername.setText(mUser.getUsername());
             etUsername.setSelection(mUser.getUsername().length());
+            etUsername.setFocusable(true);
             etPassword.setText(mUser.getPassword());
+            etPassword.setFocusable(true);
         }
     }
 
@@ -150,7 +206,7 @@ public class LoginActivity extends AppCompatActivity {
     private void saveUser(Activity activity) {
         PreferencesHelper.clearUser(this);
         mUser = new User(etUsername.getText().toString(), etPassword.getText().toString());
-        PreferencesHelper.writeToPreferences(activity, mUser);
+        PreferencesHelper.writeUserInfoToPreferences(activity, mUser);
     }
 
     private boolean isInputDataValid() {

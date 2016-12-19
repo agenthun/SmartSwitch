@@ -1,7 +1,6 @@
 package com.agenthun.smartswitch.adapter;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
@@ -23,6 +22,7 @@ import java.util.List;
  */
 public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceViewHolder> {
     private static final String TAG = "DeviceAdapter";
+
     private Context context;
     private List<Device> devices;
 
@@ -44,10 +44,27 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceView
         holder.deviceImage.setImageResource(R.drawable.ic_default_device);
         holder.deviceName.setText(device.getName());
         holder.deviceConfigTime.setText(device.getConfigTime());
-        holder.deviceConfigStatus.setText(device.getConfigStatus() ?
-                context.getString(R.string.status_open) : context.getString(R.string.status_close)
-        );
-        holder.deviceConfigInterval.setText(device.getConfigInterval());
+
+        holder.deviceConfigStatus.setText(getConfigStatusString(device.getConfigStatus()));
+
+        int interval = device.getConfigInterval();
+        StringBuilder intervalSb = new StringBuilder();
+        if (interval == 0) {
+            intervalSb.append("");
+        } else if (interval == 0xff) {
+            intervalSb.append(context.getString(R.string.interval_never));
+        } else if (interval == 0x7f) {
+            intervalSb.append(context.getString(R.string.interval_everyday));
+        } else if (interval > 0 && interval < 0xff) {
+            for (int i = 0; i < 7; i++) {
+                if ((interval & 0x01) == 1) {
+                    intervalSb.append(getDayString(i) + " ");
+                }
+                interval = interval >>> 1;
+            }
+        }
+        holder.deviceConfigInterval.setText(intervalSb.toString());
+
         holder.deviceStatus.setChecked(device.getStatus());
         holder.deviceStatus.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -78,6 +95,42 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceView
 
     public void clear() {
         devices.clear();
+    }
+
+    private String getConfigStatusString(int status) {
+        String res = "";
+        switch (status) {
+            case Device.STATUS_DEVICE_INITIAL:
+                res = "";
+                break;
+            case Device.STATUS_DEVICE_CLOSE:
+                res = context.getString(R.string.status_close);
+                break;
+            case Device.STATUS_DEVICE_OPEN:
+                res = context.getString(R.string.status_open);
+                break;
+        }
+        return res;
+    }
+
+    private String getDayString(int dayIndex) {
+        switch (dayIndex) {
+            case 0:
+                return context.getString(R.string.interval_monday);
+            case 1:
+                return context.getString(R.string.interval_thriday);
+            case 2:
+                return context.getString(R.string.interval_wednesday);
+            case 3:
+                return context.getString(R.string.interval_thuesday);
+            case 4:
+                return context.getString(R.string.interval_friday);
+            case 5:
+                return context.getString(R.string.interval_saturday);
+            case 6:
+                return context.getString(R.string.interval_sunday);
+        }
+        return "";
     }
 
     public class DeviceViewHolder extends RecyclerView.ViewHolder {

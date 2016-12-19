@@ -1,4 +1,4 @@
-package com.agenthun.smartswitch.activity;
+package com.agenthun.smartswitch.devices;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,21 +11,24 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import com.agenthun.smartswitch.R;
+import com.agenthun.smartswitch.activity.LoginActivity;
 import com.agenthun.smartswitch.data.User;
 import com.agenthun.smartswitch.databinding.ActivityMainBinding;
-import com.agenthun.smartswitch.fragment.DeviceFragment;
 import com.agenthun.smartswitch.helper.PreferencesHelper;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
 
     private static final String EXTRA_USER = "user";
 
@@ -46,12 +49,15 @@ public class MainActivity extends AppCompatActivity {
         ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         ButterKnife.bind(this);
 
+        Log.d(TAG, "getUserId() returned: " + PreferencesHelper.getUserId(this));
+        Log.d(TAG, "getSID() returned: " + PreferencesHelper.getSID(this));
+
         User user = getIntent().getParcelableExtra(EXTRA_USER);
         if (!PreferencesHelper.isSignedIn(this)) {
             if (user == null) {
                 user = PreferencesHelper.getUser(this);
             } else {
-                PreferencesHelper.writeToPreferences(this, user);
+                PreferencesHelper.writeUserInfoToPreferences(this, user);
             }
         }
         binding.setUser(user);

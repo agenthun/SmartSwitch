@@ -19,13 +19,28 @@ public class PreferencesHelper {
     private static final String PREFERENCE_USERNAME = USER_PREFERENCES + ".username";
     private static final String PREFERENCE_PASSWORD = USER_PREFERENCES + ".password";
 
+    private static final String PREFERENCE_SID = USER_PREFERENCES + ".sid";
+    private static final String PREFERENCE_USER_ID = USER_PREFERENCES + ".user.id";
+
     public PreferencesHelper() {
     }
 
-    public static void writeToPreferences(Context context, User user) {
+    public static void writeUserInfoToPreferences(Context context, User user) {
         SharedPreferences.Editor editor = getEditor(context);
         editor.putString(PREFERENCE_USERNAME, user.getUsername());
         editor.putString(PREFERENCE_PASSWORD, user.getPassword());
+        editor.apply();
+    }
+
+    public static void writeSIDToPreferences(Context context, int sid) {
+        SharedPreferences.Editor editor = getEditor(context);
+        editor.putInt(PREFERENCE_SID, sid);
+        editor.apply();
+    }
+
+    public static void writeUserIdToPreferences(Context context, int userId) {
+        SharedPreferences.Editor editor = getEditor(context);
+        editor.putInt(PREFERENCE_USER_ID, userId);
         editor.apply();
     }
 
@@ -37,6 +52,18 @@ public class PreferencesHelper {
             return null;
         }
         return new User(username, password);
+    }
+
+    public static int getSID(Context context) {
+        SharedPreferences preferences = getSharedPreferences(context);
+        final int sid = preferences.getInt(PREFERENCE_SID, 0);
+        return sid;
+    }
+
+    public static int getUserId(Context context) {
+        SharedPreferences preferences = getSharedPreferences(context);
+        final int sid = preferences.getInt(PREFERENCE_USER_ID, 0);
+        return sid;
     }
 
     public static void signOut(Context context, boolean isSavePreferences) {
@@ -52,6 +79,12 @@ public class PreferencesHelper {
         SharedPreferences.Editor editor = getEditor(context);
         editor.remove(PREFERENCE_USERNAME);
         editor.remove(PREFERENCE_PASSWORD);
+        editor.apply();
+    }
+
+    public static void clearSID(Context context) {
+        SharedPreferences.Editor editor = getEditor(context);
+        editor.remove(PREFERENCE_SID);
         editor.apply();
     }
 

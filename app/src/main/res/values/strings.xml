@@ -15,7 +15,25 @@
     <string name="error_invalid_username">请输入用户名</string>
     <string name="error_invalid_password">请输入密码</string>
     <string name="error_invalid_null">该用户尚未注册!</string>
+    <string name="error_failed_login">登录失败, 请重新登录</string>
+    <string name="action_login">正在登录...</string>
+
+    <string name="error_network_not_open">请开启网络</string>
+    <string name="error_network">网络故障</string>
+
+    <string name="error_query_online_user">获取在线用户失败</string>
+    <string name="error_query_device_group">获取设备失败, 请下拉刷新重新获取</string>
 
     <string name="status_open">开</string>
     <string name="status_close">关</string>
+
+    <string name="interval_monday">周一</string>
+    <string name="interval_thriday">周二</string>
+    <string name="interval_wednesday">周三</string>
+    <string name="interval_thuesday">周四</string>
+    <string name="interval_friday">周五</string>
+    <string name="interval_saturday">周六</string>
+    <string name="interval_sunday">周日</string>
+    <string name="interval_everyday">每天</string>
+    <string name="interval_never">从不</string>
 </resources>
