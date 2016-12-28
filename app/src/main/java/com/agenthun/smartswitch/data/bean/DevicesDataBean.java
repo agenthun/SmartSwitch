@@ -1,6 +1,7 @@
 package com.agenthun.smartswitch.data.bean;
 
 import com.agenthun.smartswitch.data.Device;
+import com.agenthun.smartswitch.data.DeviceCmdRsp;
 import com.android.annotations.NonNull;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import rx.Observable;
 
 public interface DevicesDataBean {
 
-    Observable<List<Device>> getDevices();
+    Observable<List<Device>> getDevices(int sid);
 
     Observable<Device> getDevice(@NonNull String id);
 
@@ -23,7 +24,10 @@ public interface DevicesDataBean {
     void addDevice(@NonNull Device device);
 
     //修改设备当前状态
-    void toggleDevice(@NonNull Device device);
+    Observable<DeviceCmdRsp> toggleDevice(int sid, @NonNull Device device, Boolean status);
+
+    //刷新设备
+    Observable<Device> refreshDevice(int sid, @NonNull Device device);
 
     //配置设备时间
     void configTime(@NonNull Device device, String time);

@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
 import com.agenthun.smartswitch.data.Device;
+import com.agenthun.smartswitch.data.DeviceCmdRsp;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -54,14 +55,14 @@ public class DevicesRepository implements DevicesDataBean {
     }
 
     @Override
-    public Observable<List<Device>> getDevices() {
+    public Observable<List<Device>> getDevices(int sid) {
         if (mCachedDevices != null && !mCacheIsDirty) {
             return Observable.from(mCachedDevices.values()).toList();
         } else if (mCachedDevices == null) {
             mCachedDevices = new LinkedHashMap<>();
         }
 
-        Observable<List<Device>> remoteDevices = getRemoteDevices();
+        Observable<List<Device>> remoteDevices = getRemoteDevices(sid);
 
         if (mCacheIsDirty) {
             return remoteDevices;
@@ -70,20 +71,9 @@ public class DevicesRepository implements DevicesDataBean {
         }
     }
 
-    private Observable<List<Device>> getRemoteDevices() {
+    private Observable<List<Device>> getRemoteDevices(int sid) {
         return mDevicesRemoteDataBean
-                .getDevices()
-                .flatMap(new Func1<List<Device>, Observable<List<Device>>>() {
-                    @Override
-                    public Observable<List<Device>> call(List<Device> devices) {
-                        return Observable.from(devices).doOnNext(new Action1<Device>() {
-                            @Override
-                            public void call(Device device) {
-                                mCachedDevices.put(device.getMyId(), device);
-                            }
-                        }).toList();
-                    }
-                })
+                .getDevices(sid)
                 .doOnCompleted(new Action0() {
                     @Override
                     public void call() {
@@ -129,32 +119,20 @@ public class DevicesRepository implements DevicesDataBean {
     }
 
     @Override
-    public void toggleDevice(@NonNull Device device) {
+    public Observable<DeviceCmdRsp> toggleDevice(int sid, @NonNull Device device, Boolean status) {
         checkNotNull(device);
-        mDevicesRemoteDataBean.toggleDevice(device);
+        return mDevicesRemoteDataBean.toggleDevice(sid, device, status);
+    }
 
-        Device d = new Device(device.getMyId(), device.getMac(),
-                device.getNeedRemoteControl(), device.getFactoryId(),
-                device.getType(), device.getHardwareVer(),
-                device.getSoftwareVer(), device.getBindTime(),
-                device.getTotalOnlineTime(), device.getGpsLat(),
-                device.getGpsLng(), device.getImage(),
-                device.getOnline(), device.getId(),
-                device.getPid(), device.getNodeType(),
-                device.getOrderNo(), device.getName(),
-                device.getConfigTime(), device.getConfigStatus(),
-                device.getConfigInterval(), device.getStatus() ? false : true);
-
-        if (mCachedDevices == null) {
-            mCachedDevices = new LinkedHashMap<>();
-        }
-        mCachedDevices.put(device.getMyId(), d);
+    @Override
+    public Observable<Device> refreshDevice(int sid, @NonNull Device device) {
+        checkNotNull(device);
+        return mDevicesRemoteDataBean.refreshDevice(sid, device);
     }
 
     @Override
     public void configTime(@com.android.annotations.NonNull Device device, String time) {
         checkNotNull(device);
-        mDevicesRemoteDataBean.toggleDevice(device);
 
         Device d = new Device(device.getMyId(), device.getMac(),
                 device.getNeedRemoteControl(), device.getFactoryId(),
@@ -177,7 +155,6 @@ public class DevicesRepository implements DevicesDataBean {
     @Override
     public void configStatus(@com.android.annotations.NonNull Device device, Integer status) {
         checkNotNull(device);
-        mDevicesRemoteDataBean.toggleDevice(device);
 
         Device d = new Device(device.getMyId(), device.getMac(),
                 device.getNeedRemoteControl(), device.getFactoryId(),
@@ -200,7 +177,6 @@ public class DevicesRepository implements DevicesDataBean {
     @Override
     public void configInterval(@com.android.annotations.NonNull Device device, Integer interval) {
         checkNotNull(device);
-        mDevicesRemoteDataBean.toggleDevice(device);
 
         Device d = new Device(device.getMyId(), device.getMac(),
                 device.getNeedRemoteControl(), device.getFactoryId(),
@@ -223,7 +199,6 @@ public class DevicesRepository implements DevicesDataBean {
     @Override
     public void configName(@com.android.annotations.NonNull Device device, String name) {
         checkNotNull(device);
-        mDevicesRemoteDataBean.toggleDevice(device);
 
         Device d = new Device(device.getMyId(), device.getMac(),
                 device.getNeedRemoteControl(), device.getFactoryId(),
@@ -246,7 +221,6 @@ public class DevicesRepository implements DevicesDataBean {
     @Override
     public void configImage(@com.android.annotations.NonNull Device device, String image) {
         checkNotNull(device);
-        mDevicesRemoteDataBean.toggleDevice(device);
 
         Device d = new Device(device.getMyId(), device.getMac(),
                 device.getNeedRemoteControl(), device.getFactoryId(),

@@ -18,11 +18,5 @@
         tools:context="com.agenthun.smartswitch.devices.MainActivity"
         tools:showIn="@layout/activity_main">
 
-        <ProgressBar
-            android:id="@+id/progress"
-            android:layout_width="@dimen/spacing_middle"
-            android:layout_height="@dimen/spacing_middle"
-            android:layout_gravity="center"
-            android:indeterminateOnly="true" />
     </FrameLayout>
 </layout>

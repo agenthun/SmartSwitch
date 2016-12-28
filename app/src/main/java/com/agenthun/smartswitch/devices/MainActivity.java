@@ -20,8 +20,12 @@ import android.widget.ProgressBar;
 import com.agenthun.smartswitch.R;
 import com.agenthun.smartswitch.activity.LoginActivity;
 import com.agenthun.smartswitch.data.User;
+import com.agenthun.smartswitch.data.bean.DevicesRepository;
+import com.agenthun.smartswitch.data.bean.remote.DevicesRemoteDataBean;
 import com.agenthun.smartswitch.databinding.ActivityMainBinding;
 import com.agenthun.smartswitch.helper.PreferencesHelper;
+import com.agenthun.smartswitch.util.ActivityUtils;
+import com.agenthun.smartswitch.util.schedulers.SchedulerProvider;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -32,8 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String EXTRA_USER = "user";
 
-    @Bind(R.id.progress)
-    ProgressBar progressBar;
+    private DevicePresenter mDevicePresenter;
 
     public static void start(Context context, User user) {
         Intent starter = new Intent(context, MainActivity.class);
@@ -74,24 +77,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if (savedInstanceState != null) {
-            setProgressBarVisibility(View.GONE);
-        } else {
-            attachDeviceFragment();
-        }
+        attachDeviceFragment();
+
         supportPostponeEnterTransition();
     }
 
     private void attachDeviceFragment() {
         FragmentManager supportFragmentManager = getSupportFragmentManager();
-        Fragment fragment = supportFragmentManager.findFragmentById(R.id.content_main);
-        if (!(fragment instanceof DeviceFragment)) {
+        DeviceFragment fragment = (DeviceFragment) supportFragmentManager.findFragmentById(R.id.content_main);
+        if (fragment == null) {
             fragment = DeviceFragment.newInstance();
+            ActivityUtils.replaceFragmentToActivity(supportFragmentManager, fragment, R.id.content_main);
         }
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.content_main, fragment)
-                .commit();
-        setProgressBarVisibility(View.GONE);
+
+        mDevicePresenter = new DevicePresenter(
+                MainActivity.this,
+                DevicesRepository.getInstance(DevicesRemoteDataBean.getInstance()),
+                fragment,
+                SchedulerProvider.getInstance()
+        );
     }
 
     @Override
@@ -121,9 +125,5 @@ public class MainActivity extends AppCompatActivity {
         PreferencesHelper.signOut(this, isSave);
         LoginActivity.start(this, isSave);
         ActivityCompat.finishAfterTransition(this);
-    }
-
-    private void setProgressBarVisibility(int visibility) {
-        progressBar.setVisibility(visibility);
     }
 }

@@ -93,8 +93,22 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.DeviceView
         return devices.get(position);
     }
 
-    public void clear() {
+    public void clearAllDatas() {
         devices.clear();
+        notifyDataSetChanged();
+    }
+
+    public void updateAllDatas(List<Device> devices) {
+        this.devices = devices;
+        notifyDataSetChanged();
+    }
+
+    public void updateData(int position, Device device) {
+        devices.get(position).setStatus(device.getStatus());
+        devices.get(position).setConfigTime(device.getConfigTime());
+        devices.get(position).setConfigStatus(device.getConfigStatus());
+        devices.get(position).setConfigInterval(device.getConfigInterval());
+        notifyItemChanged(position);
     }
 
     private String getConfigStatusString(int status) {

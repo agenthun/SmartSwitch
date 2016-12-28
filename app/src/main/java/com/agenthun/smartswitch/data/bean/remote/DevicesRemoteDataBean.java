@@ -1,15 +1,34 @@
 package com.agenthun.smartswitch.data.bean.remote;
 
+import android.app.Activity;
+import android.support.design.widget.Snackbar;
+import android.util.Log;
+
+import com.agenthun.smartswitch.R;
 import com.agenthun.smartswitch.data.Device;
+import com.agenthun.smartswitch.data.DeviceCmdReq;
+import com.agenthun.smartswitch.data.DeviceCmdRsp;
+import com.agenthun.smartswitch.data.DeviceQueryByGroupReq;
+import com.agenthun.smartswitch.data.DeviceQueryByGroupRsp;
 import com.agenthun.smartswitch.data.bean.DevicesDataBean;
+import com.agenthun.smartswitch.helper.PreferencesHelper;
+import com.agenthun.smartswitch.service.RetrofitManager;
 import com.android.annotations.NonNull;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @project SmartSwitch
@@ -51,11 +70,34 @@ public class DevicesRemoteDataBean implements DevicesDataBean {
     }
 
     @Override
-    public Observable<List<Device>> getDevices() {
-        return Observable
-                .from(DEVICES_SERVICE_DATA.values())
-                .delay(SERVICE_LATENCY_IN_MILLIS, TimeUnit.MILLISECONDS)
-                .toList();
+    public Observable<List<Device>> getDevices(final int sid) {
+        DeviceQueryByGroupReq request = new DeviceQueryByGroupReq(
+                sid,
+                17,
+                new ArrayList<DeviceQueryByGroupReq.DevicePageListReq>(Arrays.asList(new DeviceQueryByGroupReq.DevicePageListReq(100, -1, 1))),
+                5000,
+                "DeviceQueryByGroupReq",
+                30081
+        );
+
+        return RetrofitManager.builder().queryDeviceGroupObservable(request)
+                .flatMap(new Func1<DeviceQueryByGroupRsp, Observable<List<Device>>>() {
+
+                    @Override
+                    public Observable<List<Device>> call(DeviceQueryByGroupRsp deviceQueryByGroupRsp) {
+                        if (deviceQueryByGroupRsp.getResult() != 1) {
+                            return Observable.empty();
+                        }
+
+                        Map<String, DeviceQueryByGroupRsp.DevicePageListRsp> map = deviceQueryByGroupRsp.getSubRspMap();
+                        List<Device> list = new ArrayList<Device>();
+                        for (DeviceQueryByGroupRsp.DevicePageListRsp pageListRsp : map.values()) {
+                            list.addAll(pageListRsp.getItemList());
+                        }
+
+                        return Observable.from(list).toList();
+                    }
+                });
     }
 
     @Override
@@ -76,19 +118,22 @@ public class DevicesRemoteDataBean implements DevicesDataBean {
     }
 
     @Override
-    public void toggleDevice(@NonNull Device device) {
-        Device d = new Device(device.getMyId(), device.getMac(),
-                device.getNeedRemoteControl(), device.getFactoryId(),
-                device.getType(), device.getHardwareVer(),
-                device.getSoftwareVer(), device.getBindTime(),
-                device.getTotalOnlineTime(), device.getGpsLat(),
-                device.getGpsLng(), device.getImage(),
-                device.getOnline(), device.getId(),
-                device.getPid(), device.getNodeType(),
-                device.getOrderNo(), device.getName(),
-                device.getConfigTime(), device.getConfigStatus(),
-                device.getConfigInterval(), device.getStatus() ? false : true);
-        DEVICES_SERVICE_DATA.put(device.getMyId(), d);
+    public Observable<DeviceCmdRsp> toggleDevice(int sid, @NonNull Device device, Boolean status) {
+        Map<String, String> map = new HashMap<>(1);
+        map.put(device.getMac(), status ? DeviceCmdReq.CMD_SET_STATUS_OPEN : DeviceCmdReq.CMD_SET_STATUS_CLOSE);
+        DeviceCmdReq request = new DeviceCmdReq(
+                sid,
+                map,
+                DeviceCmdReq.FUNCTION_SET,
+                DeviceCmdReq.FUNCTION_SET_CID
+        );
+
+        return RetrofitManager.builder().operateDeviceObservable(request);
+    }
+
+    @Override
+    public Observable<Device> refreshDevice(int sid, @NonNull Device device) {
+        return RetrofitManager.builder().updateDeviceObservable(sid, device);
     }
 
     @Override

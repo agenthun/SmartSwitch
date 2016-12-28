@@ -36,4 +36,7 @@
     <string name="interval_sunday">周日</string>
     <string name="interval_everyday">每天</string>
     <string name="interval_never">从不</string>
+
+    <string name="no_devices_all">未发现设备</string>
+    <string name="no_devices_add">请点击右下角按钮添加设备</string>
 </resources>

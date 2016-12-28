@@ -93,20 +93,14 @@ public class RetrofitManager {
     public Observable<DeviceQueryByGroupRsp> queryDeviceGroupObservable(DeviceQueryByGroupReq request) {
         String content = new Gson().toJson(request);
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), content);
-        return service.queryDeviceGroup(body)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io());
+        return service.queryDeviceGroup(body);
     }
 
     //操作设备
     public Observable<DeviceCmdRsp> operateDeviceObservable(DeviceCmdReq request) {
         String content = new Gson().toJson(request);
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), content);
-        return service.operateDevice(body)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io());
+        return service.operateDevice(body);
     }
 
     //更新设备状态
@@ -153,10 +147,7 @@ public class RetrofitManager {
                 parseIntervalRsp(intervalRsp.getOutput().get(device.getMac()), device);
                 return device;
             }
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io());
+        });
     }
 
     private void parseIntervalRsp(String cmd, Device device) {
