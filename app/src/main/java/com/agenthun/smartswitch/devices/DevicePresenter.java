@@ -8,7 +8,6 @@ import com.agenthun.smartswitch.data.Device;
 import com.agenthun.smartswitch.data.DeviceCmdRsp;
 import com.agenthun.smartswitch.data.bean.DevicesRepository;
 import com.agenthun.smartswitch.helper.PreferencesHelper;
-import com.agenthun.smartswitch.service.RetrofitManager;
 import com.agenthun.smartswitch.util.schedulers.BaseSchedulerProvider;
 
 import java.util.ArrayList;
@@ -103,6 +102,9 @@ public class DevicePresenter implements DeviceContract.Presenter {
 
     private void processDevices(final boolean isShowLoadingIndicator, int sid, final List<Device> devices) {
         if (devices.isEmpty()) {
+            if (isShowLoadingIndicator) {
+                mDeviceView.setLoadingIndicator(false);
+            }
             mDeviceView.showNoDevices();
         } else {
             final List<Device> res = new ArrayList<>();
@@ -123,7 +125,6 @@ public class DevicePresenter implements DeviceContract.Presenter {
 
                             @Override
                             public void onError(Throwable e) {
-
                             }
 
                             @Override

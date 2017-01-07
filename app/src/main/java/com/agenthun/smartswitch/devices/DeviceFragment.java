@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -17,25 +18,22 @@ import android.view.ViewGroup;
 
 import com.agenthun.smartswitch.R;
 import com.agenthun.smartswitch.adapter.DeviceAdapter;
+import com.agenthun.smartswitch.adddevice.AddDeviceActivity;
 import com.agenthun.smartswitch.data.Device;
 import com.agenthun.smartswitch.data.DeviceCmdReq;
 import com.agenthun.smartswitch.data.DeviceCmdRsp;
-import com.agenthun.smartswitch.data.DeviceQueryByGroupReq;
-import com.agenthun.smartswitch.data.DeviceQueryByGroupRsp;
 import com.agenthun.smartswitch.data.UserOnlineQueryReq;
 import com.agenthun.smartswitch.data.UserOnlineQueryRsp;
 import com.agenthun.smartswitch.helper.PreferencesHelper;
 import com.agenthun.smartswitch.service.RetrofitManager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -89,6 +87,15 @@ public class DeviceFragment extends Fragment implements DeviceContract.View {
                 mPresenter.loadDevices(true, PreferencesHelper.getSID(getActivity()));
             }
         });
+
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPresenter.addNewDevice();
+            }
+        });
+
         return view;
     }
 
@@ -220,7 +227,8 @@ public class DeviceFragment extends Fragment implements DeviceContract.View {
 
     @Override
     public void showAddDevice() {
-
+        Intent intent = new Intent(getContext(), AddDeviceActivity.class);
+        startActivityForResult(intent, AddDeviceActivity.REQUEST_ADD_DEVICE);
     }
 
     @Override

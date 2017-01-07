@@ -164,8 +164,6 @@ public class LoginActivity extends AppCompatActivity {
                         ActivityCompat.finishAfterTransition(activity);
                     }
                 });
-
-
     }
 
     private void atteptRegister() {
